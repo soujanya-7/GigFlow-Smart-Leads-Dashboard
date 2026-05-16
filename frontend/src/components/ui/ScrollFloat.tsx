@@ -34,7 +34,6 @@ const ScrollFloat = ({
   const containerRef = useRef<HTMLHeadingElement>(null);
 
   const splitText = useMemo(() => {
-    // Robust text extraction from children
     const extractText = (node: ReactNode): string => {
       if (typeof node === 'string' || typeof node === 'number') {
         return String(node);
@@ -49,9 +48,17 @@ const ScrollFloat = ({
     };
 
     const text = extractText(children);
-    return text.split('').map((char, index) => (
-      <span className="char" key={index}>
-        {char === ' ' ? '\u00A0' : char}
+    // Split by words to prevent broken words across lines
+    const words = text.split(' ');
+    
+    return words.map((word, wordIndex) => (
+      <span key={wordIndex} className="word whitespace-nowrap inline-block">
+        {word.split('').map((char, charIndex) => (
+          <span className="char inline-block" key={charIndex}>
+            {char}
+          </span>
+        ))}
+        {wordIndex < words.length - 1 && <span className="char inline-block">&nbsp;</span>}
       </span>
     ));
   }, [children]);
@@ -64,23 +71,23 @@ const ScrollFloat = ({
 
     const charElements = el.querySelectorAll('.char');
 
+    gsap.killTweensOf(charElements);
+
     gsap.fromTo(
       charElements,
       {
         willChange: 'opacity, transform',
         opacity: 0,
-        yPercent: 120,
-        scaleY: 2.3,
-        scaleX: 0.7,
-        transformOrigin: '50% 0%'
+        y: 50,
+        rotateX: -90,
+        transformOrigin: '50% 50% -50'
       },
       {
         duration: animationDuration,
         ease: ease,
         opacity: 1,
-        yPercent: 0,
-        scaleY: 1,
-        scaleX: 1,
+        y: 0,
+        rotateX: 0,
         stagger: stagger,
         scrollTrigger: {
           trigger: el,
@@ -91,7 +98,13 @@ const ScrollFloat = ({
         }
       }
     );
-  }, [scrollContainerRef, animationDuration, ease, scrollStart, scrollEnd, stagger]);
+
+    return () => {
+      ScrollTrigger.getAll().forEach(t => {
+        if (t.vars.trigger === el) t.kill();
+      });
+    };
+  }, [scrollContainerRef, animationDuration, ease, scrollStart, scrollEnd, stagger, children]);
 
   return (
     <Tag ref={containerRef} className={`scroll-float ${containerClassName}`}>
