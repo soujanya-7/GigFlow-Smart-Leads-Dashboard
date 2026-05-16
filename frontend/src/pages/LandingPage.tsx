@@ -4,6 +4,9 @@ import { LayoutDashboard, Filter, ArrowRight, ShieldCheck, Download, Sun, Moon, 
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
+import Aurora from '../components/ui/Aurora';
+import ScrollFloat from '../components/ui/ScrollFloat';
+
 const LandingPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -11,10 +14,14 @@ const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background selection:bg-primary-500/30 overflow-hidden relative">
       {/* Dynamic Background */}
-      <div className="absolute top-0 inset-x-0 h-screen overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl animate-blob" />
-        <div className="absolute top-40 -left-40 w-96 h-96 bg-accent-500/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-blob animation-delay-4000" />
+      <div className="absolute top-0 inset-x-0 h-screen overflow-hidden -z-10 pointer-events-none opacity-50 dark:opacity-30">
+        <Aurora
+          colorStops={theme === 'dark' ? ["#3A29FF", "#FF94B4", "#FF3232"] : ["#7cff67","#B497CF","#5227FF"]}
+          blend={0.5}
+          amplitude={1.2}
+          speed={0.5}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-background" />
       </div>
 
       {/* Navbar */}
@@ -52,10 +59,18 @@ const LandingPage: React.FC = () => {
       {/* Hero Section */}
       <main className="container mx-auto px-6 pt-24 pb-32 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-7xl font-bold font-display text-gray-900 dark:text-white mb-6 animate-fade-in-up">
-            Manage Your Leads with{' '}
-            <span className="text-gradient">Ultimate Precision</span>
-          </h1>
+          <ScrollFloat
+            animationDuration={1}
+            ease='back.inOut(2)'
+            scrollStart='top bottom'
+            scrollEnd='bottom center'
+            stagger={0.03}
+            containerClassName="mb-6"
+            textClassName="text-5xl md:text-7xl font-bold font-display text-gray-900 dark:text-white"
+            as="h1"
+          >
+            Manage Your Leads with Ultimate Precision
+          </ScrollFloat>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             A powerful, modern CRM dashboard designed to streamline your gig workflow, scale your outreach, and deliver an incredible user experience.
           </p>
