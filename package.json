@@ -1,0 +1,11 @@
+{
+  "name": "gigflow-root-deploy",
+  "version": "1.0.0",
+  "description": "Root package.json to automatically deploy the backend to platforms like Glitch",
+  "scripts": {
+    "start": "cd backend && npm install && npm run build && npm start"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
